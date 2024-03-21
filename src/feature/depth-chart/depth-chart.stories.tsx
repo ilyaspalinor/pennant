@@ -438,6 +438,13 @@ NoData.args = {
   priceFormat: (price: number) => numberFormatter(5).format(price),
 };
 
+export const CustomYScaleMultiplier = Template.bind({});
+CustomYScaleMultiplier.args = {
+  data: { buy: AAPL_data.buy, sell: AAPL_data.sell },
+  priceFormat: (price: number) => numberFormatter(5).format(price),
+  yScaleMultiplier: 1.25,
+};
+
 export const InitialZoom = Template.bind({});
 InitialZoom.args = {
   data: { buy: zoomedOutData.buy, sell: zoomedOutData.sell },

@@ -60,6 +60,11 @@ export type DepthChartProps = {
    * Light or dark theme
    */
   theme?: ThemeVariant;
+
+  /**
+   * Multiplier for the y-axis. Useful for scaling the chart.
+   */
+  yScaleMultiplier?: number;
 };
 
 export interface DepthChartHandle {
@@ -84,6 +89,7 @@ export const DepthChart = forwardRef(
       midPrice = 0,
       notEnoughDataText = "No data",
       theme = "dark",
+      yScaleMultiplier = 2,
     }: DepthChartProps,
     ref: React.Ref<DepthChartHandle>,
   ) => {
@@ -117,6 +123,7 @@ export const DepthChart = forwardRef(
         volumeFormat,
         colors,
         dimensions,
+        yScaleMultiplier,
       });
 
       return () => {
