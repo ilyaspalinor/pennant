@@ -222,7 +222,7 @@ export class Chart extends EventEmitter {
 
     const volumeExtent: [number, number] = [
       0,
-      2 * (max(this.volumes.slice(indexExtent[0], indexExtent[1])) ?? 0),
+      1.5 * (max(this.volumes.slice(indexExtent[0], indexExtent[1])) ?? 0),
     ];
 
     const priceScale = scaleLinear().domain(priceExtent).range([0, this.width]);

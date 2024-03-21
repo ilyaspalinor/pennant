@@ -1,5 +1,5 @@
 {
-  "name": "pennant",
+  "name": "@ilyaspalinor/pennant",
   "version": "1.16.2",
   "description": "A React component library for visualising historical and streaming financial market data",
   "main": "./dist/legacy.js",
