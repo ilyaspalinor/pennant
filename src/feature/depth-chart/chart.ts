@@ -43,6 +43,8 @@ export class Chart extends EventEmitter {
   private maxPriceDifference: number = 0;
   private initialPriceDifference: number = 0;
 
+  private yScaleMultiplier: number = 2;
+
   private _data: { buy: PriceLevel[]; sell: PriceLevel[] } = {
     buy: [],
     sell: [],
@@ -68,10 +70,13 @@ export class Chart extends EventEmitter {
     height: number;
     priceFormat: (price: number) => string;
     volumeFormat: (volume: number) => string;
+    yScaleMultiplier?: number;
     colors: Colors;
     dimensions: Dimensions;
   }) {
     super();
+
+    this.yScaleMultiplier = options.yScaleMultiplier ?? 2;
 
     this.priceFormat = options.priceFormat;
     this.volumeFormat = options.volumeFormat;
@@ -222,7 +227,8 @@ export class Chart extends EventEmitter {
 
     const volumeExtent: [number, number] = [
       0,
-      1.5 * (max(this.volumes.slice(indexExtent[0], indexExtent[1])) ?? 0),
+      this.yScaleMultiplier *
+        (max(this.volumes.slice(indexExtent[0], indexExtent[1])) ?? 0),
     ];
 
     const priceScale = scaleLinear().domain(priceExtent).range([0, this.width]);
