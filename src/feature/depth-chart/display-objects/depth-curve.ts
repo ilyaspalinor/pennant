@@ -20,6 +20,7 @@ export class DepthCurve extends Container {
     stroke: number = 0,
     width: number = 1,
     curve: CurveFactory = curveStepBefore,
+    areaAlpha: number = 0.75,
   ) {
     super();
 
@@ -27,8 +28,7 @@ export class DepthCurve extends Container {
     this.stroke = stroke;
     this.width = width;
     this.curve = curve;
-
-    this.area.lineStyle({ width: 0 });
+    this.area.lineStyle({ width: 0, alpha: areaAlpha });
     this.line.lineStyle({ width: width, color: stroke, alpha: 0.5 });
 
     this.addChild(this.area);
@@ -42,13 +42,14 @@ export class DepthCurve extends Container {
     fill: number = 0xffffff,
     stroke: number = 0,
     width: number = 1,
+    areaAlpha: number = 0.75,
   ): void {
     this.fill = fill;
     this.stroke = stroke;
     this.width = width;
 
     this.area.clear();
-    this.area.beginFill(this.fill, 1);
+    this.area.beginFill(this.fill, areaAlpha);
     this.area.drawArea(
       points.map((point) => [
         point[0],
