@@ -46,6 +46,7 @@ export class Contents {
       options.colors.buyFill,
       options.colors.buyStroke,
       options.dimensions.strokeWidth,
+      0.75,
       curveStepAfter,
     );
 
@@ -53,6 +54,7 @@ export class Contents {
       options.colors.sellFill,
       options.colors.sellStroke,
       options.dimensions.strokeWidth,
+      0.75,
       curveStepAfter,
     );
 

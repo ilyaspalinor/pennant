@@ -19,8 +19,8 @@ export class DepthCurve extends Container {
     fill: number = 0xffffff,
     stroke: number = 0,
     width: number = 1,
-    curve: CurveFactory = curveStepBefore,
     areaAlpha: number = 0.75,
+    curve: CurveFactory = curveStepBefore,
   ) {
     super();
 
