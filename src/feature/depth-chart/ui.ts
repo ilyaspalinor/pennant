@@ -93,12 +93,15 @@ export class UI extends EventEmitter {
   public colors: UiColors;
 
   private prices: number[] = [];
-  private volumes: number[] = [];
   private priceLabels: string[] = [];
   private volumeLabels: string[] = [];
   private priceScale: ScaleLinear<number, number> = scaleLinear();
   private midPrice: number = 0;
   private _indicativePrice: number = 0;
+
+  private volumes: number[] = [];
+  private buyVolumes: number[] = [];
+  private sellVolumes: number[] = [];
 
   /**
    * The current scale.
@@ -343,6 +346,8 @@ export class UI extends EventEmitter {
   public update(
     prices: number[],
     volumes: number[],
+    buyVolumes: number[],
+    sellVolumes: number[],
     midPrice: number,
     priceLabels: string[],
     volumeLabels: string[],
@@ -353,6 +358,8 @@ export class UI extends EventEmitter {
   ): void {
     this.prices = prices;
     this.volumes = volumes;
+    this.buyVolumes = buyVolumes;
+    this.sellVolumes = sellVolumes;
     this.midPrice = midPrice;
     this.priceLabels = priceLabels;
     this.volumeLabels = volumeLabels;
@@ -516,33 +523,18 @@ export class UI extends EventEmitter {
         let buyNearestX: number;
         let sellNearestX: number;
 
-        if (x > width / 2) {
-          buyIndex =
-            this.prices[0] >= width / 2
-              ? -1
-              : bisectLeft(
-                  this.prices,
-                  2 * this.priceScale(this.midPrice) - nearestX,
-                );
+        buyIndex =
+          this.prices[0] >= width / 2
+            ? -1
+            : bisectLeft(
+                this.prices,
+                2 * this.priceScale(this.midPrice) - nearestX,
+              );
 
-          sellIndex = index;
+        sellIndex = index;
 
-          buyNearestX = 2 * this.priceScale(this.midPrice) - nearestX;
-          sellNearestX = nearestX;
-        } else {
-          buyIndex = index;
-
-          sellIndex =
-            this.prices[this.prices.length - 1] <= width / 2
-              ? -1
-              : bisectRight(
-                  this.prices,
-                  2 * this.priceScale(this.midPrice) - nearestX,
-                ) - 1;
-
-          buyNearestX = nearestX;
-          sellNearestX = 2 * this.priceScale(this.midPrice) - nearestX;
-        }
+        buyNearestX = 2 * this.priceScale(this.midPrice) - nearestX;
+        sellNearestX = nearestX;
 
         this.buyPriceText.update(
           this.priceLabels[buyIndex],
@@ -623,7 +615,9 @@ export class UI extends EventEmitter {
 
         const buyPricesPresent = this.prices[0] < width / 2;
 
+        // wrong y, should be from buyVolumes
         this.buyIndicator.update(buyNearestX, this.volumes[buyIndex], width);
+        // wrong y, should be from sellVolumes
         this.sellIndicator.update(sellNearestX, this.volumes[sellIndex], width);
 
         this.buyOverlay.update(

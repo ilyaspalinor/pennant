@@ -35,6 +35,9 @@ export class Chart extends EventEmitter {
 
   private prices: number[] = [];
   private volumes: number[] = [];
+  private sellVolumes: number[] = [];
+  private buyVolumes: number[] = [];
+
   private priceLabels: string[] = [];
   private volumeLabels: string[] = [];
 
@@ -295,6 +298,8 @@ export class Chart extends EventEmitter {
     this.axis.update(
       this.prices.map((price) => priceScale(price)),
       this.volumes.map((volume) => volumeScale(volume)),
+      this.buyVolumes.map((volume) => volumeScale(volume)),
+      this.sellVolumes.map((volume) => volumeScale(volume)),
       midPrice,
       this.priceLabels,
       this.volumeLabels,
@@ -345,6 +350,13 @@ export class Chart extends EventEmitter {
       this._data.sell.map((priceLevel) => priceLevel.price),
       cumsum(this._data.sell.map((priceLevel) => priceLevel.volume)),
     ) as [number, number][];
+
+    this.buyVolumes = orderBy(cumulativeBuy, ["0"]).map(
+      (priceLevel) => priceLevel[1],
+    );
+    this.sellVolumes = orderBy(cumulativeSell, ["0"]).map(
+      (priceLevel) => priceLevel[1],
+    );
 
     this.volumes = orderBy([...cumulativeBuy, ...cumulativeSell], ["0"]).map(
       (priceLevel) => priceLevel[1],
