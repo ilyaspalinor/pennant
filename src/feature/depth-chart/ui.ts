@@ -574,15 +574,7 @@ export class UI extends EventEmitter {
 
         this.buyPriceText.update(
           this.priceLabels[buyIndex],
-          Math.min(
-            Math.max(
-              buyNearestX,
-              (resolution * this.buyPriceText.width) / 2 + 2,
-            ),
-            width / 2 -
-              (resolution * this.buyPriceText.width) / 2 -
-              resolution * 2,
-          ),
+          buyNearestX,
           height - (resolution * AXIS_HEIGHT) / 2,
           { x: 0.5, y: 0.5 },
           resolution,
@@ -591,9 +583,7 @@ export class UI extends EventEmitter {
 
         this.buyVolumeText.update(
           buyVolumeLabel,
-          width / 2 - buyNearestX > resolution * this.buyVolumeText.width + 6
-            ? width / 2 - resolution * 2
-            : buyNearestX - 6,
+          buyNearestX - 6,
           Math.min(
             Math.max(
               buyVolume,
@@ -611,15 +601,7 @@ export class UI extends EventEmitter {
 
         this.sellPriceText.update(
           this.priceLabels[sellIndex],
-          Math.max(
-            Math.min(
-              sellNearestX,
-              width - (resolution * this.sellPriceText.width) / 2 - 2,
-            ),
-            width / 2 +
-              (resolution * this.sellPriceText.width) / 2 +
-              resolution * 2,
-          ),
+          sellNearestX,
           height - (resolution * AXIS_HEIGHT) / 2,
           { x: 0.5, y: 0.5 },
           resolution,
@@ -628,9 +610,7 @@ export class UI extends EventEmitter {
 
         this.sellVolumeText.update(
           sellVolumeLabel,
-          sellNearestX - width / 2 > resolution * this.sellVolumeText.width + 6
-            ? width / 2 + resolution * 3
-            : sellNearestX + 6,
+          sellNearestX + 6,
           Math.min(
             Math.max(
               sellVolume,
