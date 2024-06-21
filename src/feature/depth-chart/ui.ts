@@ -100,8 +100,8 @@ export class UI extends EventEmitter {
   private _indicativePrice: number = 0;
 
   private volumes: number[] = [];
-  private buyVolumes: number[] = [];
-  private sellVolumes: number[] = [];
+  private buys: number[][] = []; // [price, volume]
+  private sells: number[][] = []; // [price, volume]
 
   /**
    * The current scale.
@@ -346,8 +346,8 @@ export class UI extends EventEmitter {
   public update(
     prices: number[],
     volumes: number[],
-    buyVolumes: number[],
-    sellVolumes: number[],
+    buys: number[][],
+    sells: number[][],
     midPrice: number,
     priceLabels: string[],
     volumeLabels: string[],
@@ -358,8 +358,8 @@ export class UI extends EventEmitter {
   ): void {
     this.prices = prices;
     this.volumes = volumes;
-    this.buyVolumes = buyVolumes;
-    this.sellVolumes = sellVolumes;
+    this.buys = buys;
+    this.sells = sells;
     this.midPrice = midPrice;
     this.priceLabels = priceLabels;
     this.volumeLabels = volumeLabels;
@@ -615,11 +615,20 @@ export class UI extends EventEmitter {
 
         const buyPricesPresent = this.prices[0] < width / 2;
 
-        // wrong y, should be from buyVolumes
-        this.buyIndicator.update(buyNearestX, this.volumes[buyIndex], width);
-        // wrong y, should be from sellVolumes
-        this.sellIndicator.update(sellNearestX, this.volumes[sellIndex], width);
+        const buyVolume = this.buys.find(
+          (buy) => buy[0] === this.prices[buyIndex],
+        )?.[1];
 
+        if (buyVolume) {
+          this.buyIndicator.update(buyNearestX, buyVolume, width);
+        }
+
+        const sellVolume = this.sells.find(
+          (sell) => sell[0] === this.prices[sellIndex],
+        )?.[1];
+        if (sellVolume) {
+          this.sellIndicator.update(sellNearestX, sellVolume, width);
+        }
         this.buyOverlay.update(
           0,
           0,
