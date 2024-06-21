@@ -304,6 +304,8 @@ export class Chart extends EventEmitter {
       midPrice,
       this.priceLabels,
       this.volumeLabels,
+      this.buys.map((point) => this.volumeFormat(point[1])),
+      this.sells.map((point) => this.volumeFormat(point[1])),
       this.priceFormat(midPrice),
       this._indicativePrice > 0 ? "Indicative price" : "Mid Market Price",
       priceScale,

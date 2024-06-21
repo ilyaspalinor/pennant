@@ -95,6 +95,9 @@ export class UI extends EventEmitter {
   private prices: number[] = [];
   private priceLabels: string[] = [];
   private volumeLabels: string[] = [];
+  private buyVolumeLabels: string[] = [];
+  private sellVolumeLabels: string[] = [];
+
   private priceScale: ScaleLinear<number, number> = scaleLinear();
   private midPrice: number = 0;
   private _indicativePrice: number = 0;
@@ -351,6 +354,8 @@ export class UI extends EventEmitter {
     midPrice: number,
     priceLabels: string[],
     volumeLabels: string[],
+    buyVolumeLabels: string[],
+    sellVolumeLabels: string[],
     midPriceLabel: string,
     midPriceTitle: string,
     priceScale: ScaleLinear<number, number>,
@@ -363,6 +368,8 @@ export class UI extends EventEmitter {
     this.midPrice = midPrice;
     this.priceLabels = priceLabels;
     this.volumeLabels = volumeLabels;
+    this.buyVolumeLabels = buyVolumeLabels;
+    this.sellVolumeLabels = sellVolumeLabels;
     this.priceScale = priceScale;
 
     const width = this.renderer.view.width;
@@ -553,6 +560,18 @@ export class UI extends EventEmitter {
           sellNearestX = 2 * this.priceScale(this.midPrice) - nearestX;
         }
 
+        const buyVolumeIndex =
+          this.buys.findIndex((buy) => buy[0] > this.prices[buyIndex]) - 1;
+        const buyVolumeIndexResolved = Math.max(buyVolumeIndex, 0);
+        const buyVolume = this.buys[buyVolumeIndexResolved][1] ?? 0;
+        const buyVolumeLabel = this.buyVolumeLabels[buyVolumeIndexResolved];
+
+        const sellVolumeIndex =
+          this.sells.findIndex((sell) => sell[0] > this.prices[sellIndex]) - 1;
+        const sellVolumeIndexResolved = Math.max(sellVolumeIndex, 0);
+        const sellVolume = this.sells[sellVolumeIndexResolved][1] ?? 0;
+        const sellVolumeLabel = this.sellVolumeLabels[sellVolumeIndexResolved];
+
         this.buyPriceText.update(
           this.priceLabels[buyIndex],
           Math.min(
@@ -570,22 +589,8 @@ export class UI extends EventEmitter {
           this.colors,
         );
 
-        const buyVolumeIndex =
-          this.buys.findIndex((buy) => buy[0] > this.prices[buyIndex]) - 1;
-        const buyVolume =
-          buyVolumeIndex === -2
-            ? 0
-            : this.buys[Math.max(buyVolumeIndex, 0)][1] ?? 0;
-
-        const sellVolumeIndex =
-          this.sells.findIndex((sell) => sell[0] > this.prices[sellIndex]) - 1;
-        const sellVolume =
-          sellVolumeIndex === -2
-            ? 0
-            : this.sells[Math.max(sellVolumeIndex, 0)][1] ?? 0;
-
         this.buyVolumeText.update(
-          this.volumeLabels[buyIndex],
+          buyVolumeLabel,
           width / 2 - buyNearestX > resolution * this.buyVolumeText.width + 6
             ? width / 2 - resolution * 2
             : buyNearestX - 6,
@@ -622,7 +627,7 @@ export class UI extends EventEmitter {
         );
 
         this.sellVolumeText.update(
-          this.volumeLabels[sellIndex],
+          sellVolumeLabel,
           sellNearestX - width / 2 > resolution * this.sellVolumeText.width + 6
             ? width / 2 + resolution * 3
             : sellNearestX + 6,
