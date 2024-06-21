@@ -518,23 +518,40 @@ export class UI extends EventEmitter {
         const index = bisectCenter(this.prices, x);
         const nearestX = this.prices[index];
 
+        const smallestSellPrice = this.sells[0][0];
+
         let buyIndex: number;
         let sellIndex: number;
         let buyNearestX: number;
         let sellNearestX: number;
 
-        buyIndex =
-          this.prices[0] >= width / 2
-            ? -1
-            : bisectLeft(
-                this.prices,
-                2 * this.priceScale(this.midPrice) - nearestX,
-              );
+        if (nearestX >= smallestSellPrice) {
+          buyIndex =
+            this.prices[0] >= width / 2
+              ? -1
+              : bisectLeft(
+                  this.prices,
+                  2 * this.priceScale(this.midPrice) - nearestX,
+                );
 
-        sellIndex = index;
+          sellIndex = index;
 
-        buyNearestX = 2 * this.priceScale(this.midPrice) - nearestX;
-        sellNearestX = nearestX;
+          buyNearestX = 2 * this.priceScale(this.midPrice) - nearestX;
+          sellNearestX = nearestX;
+        } else {
+          buyIndex = index;
+
+          sellIndex =
+            this.prices[this.prices.length - 1] <= width / 2
+              ? -1
+              : bisectRight(
+                  this.prices,
+                  2 * this.priceScale(this.midPrice) - nearestX,
+                ) - 1;
+
+          buyNearestX = nearestX;
+          sellNearestX = 2 * this.priceScale(this.midPrice) - nearestX;
+        }
 
         this.buyPriceText.update(
           this.priceLabels[buyIndex],
@@ -615,20 +632,15 @@ export class UI extends EventEmitter {
 
         const buyPricesPresent = this.prices[0] < width / 2;
 
-        const buyVolume = this.buys.find(
-          (buy) => buy[0] === this.prices[buyIndex],
-        )?.[1];
+        const buyVolume =
+          this.buys.find((buy) => buy[0] === this.prices[buyIndex])?.[1] ??
+          this.volumes[buyIndex];
+        this.buyIndicator.update(buyNearestX, buyVolume, width);
 
-        if (buyVolume) {
-          this.buyIndicator.update(buyNearestX, buyVolume, width);
-        }
-
-        const sellVolume = this.sells.find(
-          (sell) => sell[0] === this.prices[sellIndex],
-        )?.[1];
-        if (sellVolume) {
-          this.sellIndicator.update(sellNearestX, sellVolume, width);
-        }
+        const sellVolume =
+          this.sells.find((sell) => sell[0] === this.prices[sellIndex])?.[1] ??
+          this.volumes[sellIndex];
+        this.sellIndicator.update(sellNearestX, sellVolume, width);
         this.buyOverlay.update(
           0,
           0,
