@@ -560,6 +560,8 @@ export class UI extends EventEmitter {
           sellNearestX = 2 * this.priceScale(this.midPrice) - nearestX;
         }
 
+        // TODO:
+        // there is a known bug, where the buyIndex and sellIndex can be 0 or -1 and the other is wrong value
         const buyVolumeIndex =
           this.buys.findIndex((buy) => buy[0] > this.prices[buyIndex]) - 1;
         const buyVolumeIndexResolved = Math.max(buyVolumeIndex, 0);
@@ -568,7 +570,8 @@ export class UI extends EventEmitter {
 
         const sellVolumeIndex =
           this.sells.findIndex((sell) => sell[0] > this.prices[sellIndex]) - 1;
-        const sellVolumeIndexResolved = Math.max(sellVolumeIndex, 0);
+        const sellVolumeIndexResolved =
+          sellVolumeIndex < 0 ? this.sells.length - 1 : sellVolumeIndex;
         const sellVolume = this.sells[sellVolumeIndexResolved][1] ?? 0;
         const sellVolumeLabel = this.sellVolumeLabels[sellVolumeIndexResolved];
 
