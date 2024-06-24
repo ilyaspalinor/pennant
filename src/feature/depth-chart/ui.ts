@@ -564,14 +564,23 @@ export class UI extends EventEmitter {
         // there is a known bug, where the buyIndex and sellIndex can be 0 or -1 and the other is wrong value
         const buyVolumeIndex =
           this.buys.findIndex((buy) => buy[0] > this.prices[buyIndex]) - 1;
-        const buyVolumeIndexResolved = Math.max(buyVolumeIndex, 0);
+        const buyVolumeIndexResolved =
+          buyVolumeIndex < 0
+            ? buyVolumeIndex === -1
+              ? 0
+              : this.buys.length - 1
+            : buyVolumeIndex;
         const buyVolume = this.buys[buyVolumeIndexResolved][1] ?? 0;
         const buyVolumeLabel = this.buyVolumeLabels[buyVolumeIndexResolved];
 
         const sellVolumeIndex =
           this.sells.findIndex((sell) => sell[0] > this.prices[sellIndex]) - 1;
         const sellVolumeIndexResolved =
-          sellVolumeIndex < 0 ? this.sells.length - 1 : sellVolumeIndex;
+          sellVolumeIndex < 0
+            ? sellVolumeIndex === -1
+              ? 0
+              : this.sells.length - 1
+            : sellVolumeIndex;
         const sellVolume = this.sells[sellVolumeIndexResolved][1] ?? 0;
         const sellVolumeLabel = this.sellVolumeLabels[sellVolumeIndexResolved];
 
